@@ -1,0 +1,96 @@
+---
+title       : Gestational age calculator
+subtitle    : A guide for the shiny app
+author      : Juan M Zambrano
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Introduction
+
+This [simple yet useful calculator](https://jmzam.shinyapps.io/gestationalcalculator) can estimate gestational age and estimated date of delivery based on a current (or otherwise desired) date and one of two parameters:
+
+1. Date of first day of last menstrual period
+2. Date of ultrasound and gestational age by ultrasound*
+
+The gestational age is calculated using the calendar method (i.e. counting how many days have passed since the last menstrual period or the ultrasound date). 
+
+The estimated date of delivery is calculated by adding 280 days to the last menstrual period [1].
+
+A more detailed explanation of why these methods are useful for you and your doctor can be found [here](http://rhrealitycheck.org/article/2013/10/17/whats-in-a-week-pregnancy-dating-standards-and-what-they-mean/). More details on how ultrasound can be used to calculate gestational age can be found [here](https://tonygood4.wordpress.com/2013/02/03/developing-and-eye-for-ultrasound/).
+
+
+
+--- .class #id 
+
+## Estimated delivery date by last menstrual period
+
+As an example, let us consider a last menstrual period 80 days ago, the calculation would be:
+
+
+```r
+ lmp <- Sys.Date()-80 #Example last menstrual period 80 days ago
+ #Estimated date of delivery = last menstrual period + 280
+ edd <- paste("The estimated date of delivery is", lmp+280)
+ # Calculates time difference between today and last menstrual period
+ diff <- as.numeric(Sys.Date()-lmp) 
+ # Current gestational age in weeks and days
+ cgalmp <- paste("The current gestational age is",diff%/%7, "weeks", diff%%7, "days") 
+ cgalmp
+```
+
+```
+## [1] "The current gestational age is 11 weeks 3 days"
+```
+
+```r
+ edd
+```
+
+```
+## [1] "The estimated date of delivery is 2016-06-09"
+```
+
+
+--- .class #id 
+
+## Estimated delivery date by ultrasound
+
+But what if we cannot trust the last menstrual period (because it cannot be remembered or cycles are irregular). If we had an ultrasound done 3 weeks ago, stating that the estimated gestational age is 7 weeks 5 days, suggesting a different gestational age and date of delivery. The estimated date of delivery and current gestational age would be calculated as follows:
+
+
+
+```r
+        today <- Sys.Date(); usdate <- today - 21; usweek <- 7 ; usday <- 5
+        diff <- as.numeric(as.Date(today)-as.Date(usdate))+7*usweek+usday
+        cgaus <- paste("The current gestational age is", diff%/%7, "weeks", diff%%7, "days")
+        eddus <-paste("The estimated date of delivery is", as.Date(today)+(280-diff))
+        cgaus
+```
+
+```
+## [1] "The current gestational age is 10 weeks 5 days"
+```
+
+```r
+        eddus 
+```
+
+```
+## [1] "The estimated date of delivery is 2016-06-14"
+```
+
+
+--- .class #id 
+
+## References
+
+
+1. World Health Organization. ICD-10: International statistical classification of diseases and related health problems, 10th revision. Volume 2. 2nd ed. Geneva: WHO; 2004. Available at: http://www.who.int/classifications/icd/ICD-10_2nd_ed_volume2.pdf. Retrieved November 12, 2015.
+
+Thank you for viewing the presentation. Be sure to visit the [app! :)] (https://jmzam.shinyapps.io/gestationalcalculator)
